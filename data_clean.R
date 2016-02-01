@@ -1,5 +1,5 @@
 #data clean
-setwd("/Users/Ryan/Desktop/EDAV/")
+setwd("~/Desktop/EDAV/EDAV_HW1")
 survey <- read.csv("Survey+Response.csv")
 
 #naming vars and removing empty columns
