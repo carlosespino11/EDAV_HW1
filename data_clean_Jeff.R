@@ -46,4 +46,3 @@ qplot(exp.Github, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot")
 
 
 
-
