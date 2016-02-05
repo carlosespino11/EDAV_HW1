@@ -8,6 +8,7 @@ library(ggthemes)
 library(manipulate)
 library(grid)
 library(gridExtra)
+library(tidyr)
 
 setwd("~/Documents/Columbia/Exploratory Data Analysis and Visualization/HW1/EDAV_HW1/")
 source("utils.R")
@@ -62,3 +63,20 @@ manipulate(plot_exp_gender(var) ,
 grid.arrange(plot_exp_gender("exp.Radvanced"), plot_exp_gender("exp.Rgraphics"), 
              plot_exp_gender("exp.documentation"), plot_exp_gender("exp.Matlab"),
              plot_exp_gender("exp.Github"), ncol=3)
+
+
+
+
+experience = survey %>% gather(experience,  exp.Rmodeling ,exp.Radvanced:exp.Github)
+
+
+exp_gender = ggplot(experience,aes(x=experience, fill = gender)) + 
+  geom_bar(data = dplyr::filter(experience, gender=="Female")) + 
+  geom_bar(data = dplyr::filter(experience, gender=="Male"), aes(y=..count..*(-1))) + 
+  # scale_y_continuous(breaks=seq(-40,40,10)) +
+  # labs(title=var)+
+  coord_flip()+
+  theme_fivethirtyeight() + scale_fill_manual(values= c("#107FC9","#FE4365"), "gender")+ 
+  facet_wrap(~language,ncol = 3)
+
+ggsave("exp_gender.png",exp_gender)
