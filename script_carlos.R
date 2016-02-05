@@ -67,7 +67,10 @@ grid.arrange(plot_exp_gender("exp.Radvanced"), plot_exp_gender("exp.Rgraphics"),
 
 
 
-experience = survey %>% gather(experience,  exp.Rmodeling ,exp.Radvanced:exp.Github)
+experience = survey %>% gather( language,experience,  starts_with("exp")) %>% 
+  mutate(experience = factor(experience, levels= c("None" ,"A little",  "Confident", "Expert")))
+levels(experience$language) = c("R Modeling", "R Graphics", " R advanced", 
+                                "documentation", "Matlab", "Github")
 
 
 exp_gender = ggplot(experience,aes(x=experience, fill = gender)) + 
@@ -76,7 +79,7 @@ exp_gender = ggplot(experience,aes(x=experience, fill = gender)) +
   # scale_y_continuous(breaks=seq(-40,40,10)) +
   # labs(title=var)+
   coord_flip()+
-  theme_fivethirtyeight() + scale_fill_manual(values= c("#107FC9","#FE4365"), "gender")+ 
+  theme_fivethirtyeight() + scale_fill_manual(values= c("#FE4365","#107FC9"), "gender")+ 
   facet_wrap(~language,ncol = 3)
-
-ggsave("exp_gender.png",exp_gender)
+exp_gender
+ggsave("exp_gender.png",exp_gender, scale = 1.7)
