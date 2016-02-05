@@ -18,24 +18,24 @@ survey = read.csv("Survey+Response.csv") %>% clean_data()
 
 ggplot(survey)+ geom_bar(aes(x = reorder_size(primaryeditor), fill=reorder_size(gender)))+  
   scale_fill_manual(values= c("#107FC9","#FE4365","grey"), "gender") +
-  labs(title="Text Editors by gender", x = "text editor") +
+  labs(title="text editor by gender", x = "text editor") +
   theme_fivethirtyeight()
 
 
-ggplot(survey)+ geom_bar(aes(x = reorder_size(primaryeditor))) + facet_grid(program~.) 
+ggplot(survey)+ geom_bar(aes(x = reorder_size(primaryeditor))) + facet_grid(program~.) +
   theme_fivethirtyeight() +  
-  labs(title="Text editor by program", x = "editor")
+  labs(title="text editor by program", x = "editor")
 
-ggplot(survey)+ aes(y = number_tools, x = program) + geom_boxplot()+ 
+ggplot(survey)+ aes(y = number_tools, x = program) + geom_boxplot(fill="grey")+ 
   stat_summary(fun.data =give.n, geom = "text" ) +
-  scale_size_area()+ theme_fivethirtyeight() +  scale_fill_tableau() +  
-  labs(title="# of Tools by program", y = "tools")
+  theme_fivethirtyeight() +  
+  labs(title="# of tools by program", y = "tools")
 
 ggplot(filter(survey, gender != "Unknown")) + aes(y = number_tools, x = reorder_size(gender),fill=reorder_size(gender)) + 
   geom_boxplot()+
   theme_fivethirtyeight() + 
   scale_fill_manual(values= c("#107FC9","#FE4365"), "gender")+
-  labs(title="# of Tools by program", x = "gender", y = "tools")
+  labs(title="# of tools by gender", x = "gender", y = "tools")
 
 # 
 # ggplot(data=survey,aes(x=number_tools,fill=gender)) + 
