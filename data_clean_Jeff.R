@@ -34,15 +34,13 @@ library(ggplot2)
 ggplot(survey, aes(x=program, fill = gender)) + geom_bar(width = .5) + coord_flip()
 
 #gender/program/count_exp in heatmap form
-ggplot(survey, aes(gender, program, fill = apply(survey[,12:29],1,sum))) + geom_tile() + scale_fill_gradient2(high = "red",low = "white")
+ggplot(survey, aes(gender, program, fill = apply(survey[,12:29],1,sum))) + geom_tile() + scale_fill_gradient2(high = "red",low = "white", ylab("count"))
 
 #exp based on num_languages
-qplot(exp.Rmodeling, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot")
-qplot(exp.Rgraphics, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot")
-qplot(exp.Radvanced, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot")
-qplot(exp.documentation, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot")
-qplot(exp.Matlab, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot")
-qplot(exp.Github, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot")
-
-
+qplot(exp.Rmodeling, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot", ylab = "count")
+qplot(exp.Rgraphics, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot", ylab = "count")
+qplot(exp.Radvanced, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot", ylab = "count")
+qplot(exp.documentation, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot", ylab = "count")
+qplot(exp.Matlab, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot", ylab = "count")
+qplot(exp.Github, apply(survey[,12:29],1,sum), data = survey, geom = "boxplot", ylab = "count")
 
