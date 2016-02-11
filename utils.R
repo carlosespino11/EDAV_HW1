@@ -3,6 +3,7 @@ reorder_size <- function(x) {
 }
 
 clean_data <- function(survey){
+  exp_cols = grepl("exp\\.",names(survey))
   names(survey) <- c("waitlist","program","tools","exp.Rmodeling","b5","b6","b7","b8","b9","b10","b11","gender","primaryeditor","exp.Rgraphics","exp.Radvanced","exp.documentation","exp.Matlab","exp.Github","b19","b20","b21","b22","b23","b24","b25","b26","b27","b28","b29","b30","b31","b32","b33","b34","b35","b36","b37","b38")
   survey <- survey[,c(-5:-11,-19:-38)]
   
@@ -53,7 +54,10 @@ clean_data <- function(survey){
                   )
            )
     )), number_tools = sapply(strsplit(as.character(tools),","), length)
-  )
+  ) %>% mutate_each(funs(factor(.,levels= c("None" ,"A little",  "Confident", "Expert"))), starts_with("exp."))%>%
+    mutate_each(funs(n = as.numeric(.)-1), starts_with("exp."))%>%
+    mutate(experience_programming = exp.Rgraphics + exp.Rmodeling + exp.Radvanced +
+             exp.documentation + exp.Matlab + exp.Github)
   # levels(survey$program) = c("Applied Math", "MS IDSE", "Cert IDSE", 
   #                            "MS IDSE","MS IDSE","MS IDSE",
   #                            "Other", "Other", "PhD. BMI",
@@ -63,6 +67,7 @@ clean_data <- function(survey){
                              "MS IDSE","MS IDSE","MS IDSE",
                              "Other Masters", "Other PhD", "Other PhD",
                              "QMSS", "QMSS","MS Stat")
+  survey$program = reorder_size(survey$program)
   return(survey)
 }
 

@@ -1,7 +1,7 @@
 library(devtools)
 
-install_github("carlosespino11/ggthemes")
-install_github('ramnathv/rCharts')
+# Run if you don't have ggthemes installed
+#install_github("carlosespino11/ggthemes")
 
 library(rCharts)
 library(ggplot2)
@@ -15,12 +15,13 @@ library(tidyr)
 library(lubridate)
 
 setwd("~/Documents/Columbia/Exploratory Data Analysis and Visualization/HW1/EDAV_HW1/")
+
 source("utils.R")
 
-
 survey = read.csv("Survey+Response.csv") %>% clean_data()
-
 learn_interest = read.csv("learn_interest_google.csv")
+genderTech <- read.csv('gender-tech.csv')
+
 
 learn_interest$Week = ymd(unlist(lapply(as.character(learn_interest$Week), function(x) strsplit(x," - ")[[1]][1])))
 
@@ -51,19 +52,80 @@ labs(title="text editor by gender", x = "text editor") +
 
 ggplot(survey)+ geom_bar(aes(x = reorder_size(primaryeditor))) + facet_grid(program~.) +
   theme_fivethirtyeight() +  
-  labs(title="text editor by program", x = "editor")
+  labs(title="Text Editor by Program", x = "editor")
 
 ggplot(survey)+ aes(y = number_tools, x = program, fill = program) + geom_boxplot()+ 
   stat_summary(fun.data =give.n, geom = "text" ) +
-  theme_fivethirtyeight() +  
-  scale_fill_tableau()
+  theme_fivethirtyeight() + 
+  theme(legend.position="none")+
+  scale_fill_tableau()+
   labs(title="# of tools by program", y = "tools")
+  
+exp_by_program  = ggplot(survey)+ aes(y = experience_programming, x =program, fill = program) + geom_boxplot()+ 
+    stat_summary(fun.data =give.n, geom = "text" ) +
+    theme_fivethirtyeight() +  
+    theme(legend.position="none")+
+    scale_fill_tableau()+
+    labs(title="Experience by program", y = "experience", x="program")
+exp_by_program  
+ggsave("exp_by_program.png", exp_by_program)
+
+exp_tools= ggplot(survey) + aes(y = experience_programming, x = number_tools) +
+  geom_point()+ geom_smooth(method = "lm")+ 
+  theme_fivethirtyeight() +  
+  scale_fill_tableau() + 
+  labs(title="experience vs tools", x = "tools", y="experience")
+exp_tools
+ggsave("exp_tools.png", exp_tools)
+
+
+exp_dist_program = ggplot(survey, aes(x = experience_programming))  + geom_density( aes(y=..count..))  + geom_bar(aes(fill=program),alpha = .7)+
+  facet_wrap(~program,ncol=3)+ 
+  theme_fivethirtyeight() +  
+  scale_fill_tableau() + 
+  theme(legend.position="none")+
+  labs(title="Experience Distribution by Program", x = "experience")
+exp_dist_program
+ggsave("exp_dist_program.png", exp_dist_program)
+
+exp_dist = ggplot(survey, aes(x = experience_programming))  + geom_density( aes(y=..count..))  + geom_bar(alpha = .7)+
+  theme_fivethirtyeight() +  
+  scale_fill_tableau() + 
+  labs(title="Experience Distribution", x = "experience")
+exp_dist
+ggsave("exp_dist.png", exp_dist)
+
+
+tool_dist_program = ggplot(survey, aes(x = number_tools))  + geom_density( aes(y=..count..))  + geom_bar(aes(fill=program),alpha = .7)+
+  facet_wrap(~program,ncol=3)+ 
+  theme_fivethirtyeight() +  
+  scale_fill_tableau() + 
+  theme(legend.position="none")+
+  labs(title="# of Tools Distribution by Program", x = "tools")
+
+tool_dist = ggplot(survey, aes(x = number_tools))  + geom_density( aes(y=..count..))  + geom_bar(alpha = .7)+
+  theme_fivethirtyeight() +  
+  scale_fill_tableau() + 
+  labs(title="# of Tools Distribution", x = "tools")
+tool_dist
+ggsave("tool_dist.png", tool_dist)
+
+tools_gender_density = ggplot(survey, aes(x = number_tools)) +
+  geom_density(data = dplyr::filter(survey,gender == "Male"), aes(fill=gender), alpha = .5) +
+  geom_density(data = dplyr::filter(survey,gender == "Female"), aes(fill=gender,y=..density..*(-1)), alpha = .5) +
+  facet_grid(~program,scales="free_y") +scale_y_continuous(breaks=seq(-.2,.2,.2))+
+  coord_flip() + theme_fivethirtyeight() + scale_fill_tableau(name = "gender")+
+  labs(title="# of Tools by Gender Distribution", x = "tools")
+tools_gender_density
+
+ggsave("tools_gender_density.png", tools_gender_density)
 
 ggplot(filter(survey, gender != "Unknown")) + aes(y = number_tools, x = reorder_size(gender),fill=reorder_size(gender)) + 
   geom_boxplot()+
   theme_fivethirtyeight() + 
   scale_fill_tableau(name = "gender")+
   labs(title="# of tools by gender", x = "gender", y = "tools")
+
 
 # 
 # ggplot(data=survey,aes(x=number_tools,fill=gender)) + 
@@ -83,17 +145,23 @@ ggplot(data=survey,aes(x=program,fill=reorder_size(gender))) +
   labs(title = "Gender by program")
 
 
-
+ggplot(survey)+ aes(y = number_tools, x = program, fill = program) + geom_boxplot()+ 
+  stat_summary(fun.data =give.n, geom = "text" ) +
+  theme_fivethirtyeight() +  
+  scale_fill_tableau()
 
 # manipulate(plot_exp_gender(var) ,
 #   var=picker("exp.Radvanced", "exp.Rgraphics","exp.documentation", "exp.Matlab","exp.Github"))
 
 
-experience = survey %>% gather( language,experience,  starts_with("exp")) %>% 
-  mutate(experience = factor(experience, levels= c("None" ,"A little",  "Confident", "Expert")))
+experience = survey %>% gather( language,experience,  starts_with("exp.")) %>% 
+  mutate(experience = factor(experience, levels= c("None" ,"A little",  "Confident", "Expert"))) 
+
 levels(experience$language) = c("R Modeling", "R Graphics", " R advanced", 
                                 "documentation", "Matlab", "Github")
 
+
+labs(title="experience by program", y = "tools")
 
 exp_gender = ggplot(experience,aes(x=experience, fill = gender)) + 
   geom_bar(data = dplyr::filter(experience, gender=="Female")) + 
@@ -112,9 +180,29 @@ n1 <- nPlot(Freq ~ primaryeditor, group = "program", data = freq_editor,
 n1
 
 avg_experience = experience %>% mutate(experience = as.numeric(experience)-1)%>%
-  group_by(gender, language) %>% summarize( experience = mean(experience))
+  group_by(language, program) %>% summarize( experience = sum(experience))
+
+
 ggplot(filter(avg_experience, gender!="Unknown")) + geom_bar(stat="identity",aes(x = language, y = experience,fill = gender),position = "dodge",alpha = .7)+ 
   labs(title="experience by gender", x = "experience") +
   theme_fivethirtyeight()+
   scale_fill_tableau()+
   coord_polar() 
+
+library(reshape)
+
+genderTech <- genderTech[order(genderTech$percentWomen),]
+
+genderTech <- melt(genderTech, id=c('Company'))
+
+genderTech$Company <- factor(genderTech$Company, 
+                             levels=rev(c('STAT 4701: EDAV','eBay', 'Apple', 'Pinterest', 'Google',
+                                          'LinkedIn', 'Yahoo', 'Facebook', 'Twitter')))
+
+ggplot(data = genderTech, aes(x = Company, y = value, fill = variable)) + coord_flip() +
+  geom_bar(stat = "identity") + 
+  labs(title='Gender in Tech Workforce', x='', y='') +
+  scale_y_continuous(label=function(x) {return(paste(x,'%'))}) + 
+  guides(fill=guide_legend(title=NULL)) +
+  scale_fill_tableau(labels=c('Women', 'Men')) +
+  theme_fivethirtyeight() 
