@@ -1,22 +1,20 @@
-reorder_size <- function(x) {
-  factor(x, levels = names(sort(table(x), decreasing = TRUE)))
+reorder_size <- function(x, dec= TRUE) {
+  factor(x, levels = names(sort(table(x), decreasing = dec)))
 }
 
 clean_data <- function(survey){
-  exp_cols = grepl("exp\\.",names(survey))
   names(survey) <- c("waitlist","program","tools","exp.Rmodeling","b5","b6","b7","b8","b9","b10","b11","gender","primaryeditor","exp.Rgraphics","exp.Radvanced","exp.documentation","exp.Matlab","exp.Github","b19","b20","b21","b22","b23","b24","b25","b26","b27","b28","b29","b30","b31","b32","b33","b34","b35","b36","b37","b38")
   survey <- survey[,c(-5:-11,-19:-38)]
-  
   #dummy variables for each language/tool in tools
   tooldummies = c()
-  toolList <- c("Github","Excel","SQL","RStudio","ggplot2","shell", "C/C","Python","LaTeX","(grep)","Sweave/knitr","XML","Web: html css js","dropbox","google drive","SPSS","Stata")
+  toolList <- c("Matlab","lattice","Github","Excel","SQL","RStudio","ggplot2","shell", "C/C","Python","LaTeX","(grep)","Sweave/knitr","XML","Web: html css js","dropbox","google drive","SPSS","Stata")
   for(t in toolList){
     tooldummies <- cbind(tooldummies,grepl(t,survey$tools))
   }
   tooldummies <- cbind(tooldummies,(grepl("R,",survey$tools)==TRUE | (grepl("R",survey$tools)==TRUE & grepl("RStudio",survey$tools)==FALSE)))
-  colnames(tooldummies) <- c("GitHub","Excel","SQL","RStudio","ggplot2","shell", "C","Python","LaTeX","grep","Sweave","XML","Web","dropbox","googledrive","SPSS","Stata","R")
+  colnames(tooldummies) <- c("Matlab","lattice","GitHub","Excel","SQL","RStudio","ggplot2","shell", "C","Python","LaTeX","grep","Sweave","XML","Web","dropbox","googledrive","SPSS","Stata","R")
   survey <- cbind(survey,tooldummies)
-  levels(survey$gender)
+
   levels(survey$gender) <- c("doesn't matter", "doesn't matter", "he/him", "she/her")
   levels(survey$gender) <- c("Unknown", "Male", "Female")
   
