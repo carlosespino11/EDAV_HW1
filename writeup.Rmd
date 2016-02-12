@@ -9,6 +9,7 @@ output:
 ---
 
 ```{r echo=FALSE, warning=FALSE,message=FALSE}
+library(ggdendro)
 library(scales)
 library(corrplot)
 library(png)
@@ -148,12 +149,13 @@ corrplot(cor(survey[,sort(names(order))]),method='square',diag = FALSE, mar = c(
 This table displays the pairwise correlation of familiarity with each tool. A positive correlation between a pair indicates that an individual that knows one tool means that it is more likely the individual knows the second language then the class as a whole. The table can help reveal what tools are often learned together or that may rely on each other. For example, R and RStudio has the highest (positive) correlation which is unsurprising since familiarity with RStudio would suggest familiarity with R, and the two are typically used in combination. Other highly correlated tools are google drive and dropbox (both collaboration/cloud storage services), lattice and sweave (both R libraries), and shell and SQL. Looking at whole rows (or columns) reveals which tools tend to be known by individuals with a larger set of tools. For example, SQL and shell have multiple tools with a positive correlation suggesting that if someone knows SQL or shell, they probably know a larger number of tools than the class average. Conversely, someone who knows Stata, SPSS, or MatLab probably does not know more tools than typical. Overall, most correlations are positive suggesting knowing a specific tool means that you are more likely to know a greater number of other tools.
 
 
-```{r,echo=FALSE, warning=FALSE,fig.width=6, fig.height=4,fig.align='center',out.width='.9\\textwidth'}
+```{r,echo=FALSE, warning=FALSE,fig.width=10,fig.align='center',out.width='.9\\textwidth'}
 tooldummies = survey[,12:31]
 dist <- dist(t(tooldummies))
 clust <- hclust(dist, method = 'average')
 par(mar = c(1,0,2,1))
-plot(clust, main = 'Tool Cluster Dendrogram', axes = FALSE)
+# plot(clust, main = 'Tool Cluster Dendrogram', axes = FALSE)
+ggdendrogram(clust) + theme_fivethirtyeight() + labs(title = 'Tool Cluster Dendrogram') + theme(axis.text.y = element_blank(), axis.title = element_blank())
 ```
 
 
@@ -164,27 +166,9 @@ par(mar = c(3,1,4,1))
 toolcount = apply(survey[,12:31],1,function(x) mean(x))
 
 biplot(princomp(cbind(tooldummies,toolcount),scale = TRUE),xlabs=rep("",114), xlab = '', ylab = '',col = '#f8766d',xlim = c(-.21,.02),ylim = c(-.16,.11),main = 'Biplot from PCA of Tool Familiarity',bg = 'grey')
+# pca_fit = princomp(cbind(tooldummies,toolcount),scale = TRUE)
+# autoplot(princomp(cbind(tooldummies,toolcount),scale = TRUE), loadings = TRUE, loadings.label = TRUE,xlim = c(-.5, .5), ylim = c(-.6, .6))
 
-# PCbiplot <- function(PC, x="PC1", y="PC2") {
-#     # PC being a prcomp object
-#     data <- data.frame(obsnames=row.names(PC$x), PC$x)
-#     plot <- ggplot(data, aes_string(x=x, y=y)) + geom_text(alpha=.4, size=3, aes(label=obsnames))
-#     plot <- plot + geom_hline(aes(0), size=.2) + geom_vline(aes(0), size=.2)
-#     datapc <- data.frame(varnames=rownames(PC$rotation), PC$rotation)
-#     mult <- min(
-#         (max(data[,y]) - min(data[,y])/(max(datapc[,y])-min(datapc[,y]))),
-#         (max(data[,x]) - min(data[,x])/(max(datapc[,x])-min(datapc[,x])))
-#         )
-#     datapc <- transform(datapc,
-#             v1 = .7 * mult * (get(x)),
-#             v2 = .7 * mult * (get(y))
-#             )
-#     plot <- plot + coord_equal() + geom_text(data=datapc, aes(x=v1, y=v2, label=varnames), size = 5, vjust=1, color="red")
-#     plot <- plot + geom_segment(data=datapc, aes(x=0, y=0, xend=v1, yend=v2), arrow=arrow(length=unit(0.2,"cm")), alpha=0.75, color="red")
-#     plot
-# }
-# 
-# PCbiplot(prcomp(cbind(tooldummies,toolcount),scale=T))
 ```
 
 
