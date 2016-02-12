@@ -277,7 +277,7 @@ ggplot(experience) + geom_boxplot(aes(x = experience, y = experience_programming
 ```
 
 
-This histogram plots the distribution of experience levels in the class.  We converted experience levels (None, A little, Confident, Expert) to values 0 - 3 for the experience-related columns so we could sum them and get a sense of the overall experience level of respondents.  Given there were four experience columns, the maximum possible ‘experience’ value is 18.  The mean for the class was 6.46, with std of 3.37, min of 0 and max of 15.  The distribution is fairly symmetric around the mean, with a slightly longer upper tail indicating that most respondents have some experience with analytical tools and techniques, but not extensive experience.
+This histogram plots the distribution of experience levels in the class.  We converted experience levels (None, A little, Confident, Expert) to values 0 - 3 for the experience-related columns so we could sum them and get a sense of the overall experience level of respondents.  Given there were six experience columns, the maximum possible ‘experience’ value is 18.  The mean for the class was 6.46, with std of 3.37, min of 0 and max of 15.  The distribution is fairly symmetric around the mean, with a slightly longer upper tail indicating that most respondents have some experience with analytical tools and techniques, but not extensive experience.
 
 ```{r,echo=FALSE, warning=FALSE,fig.width=7,fig.align='center', out.width='.9\\textwidth'}
 
