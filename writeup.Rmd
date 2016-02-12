@@ -121,6 +121,14 @@ ggplot(survey, aes(gender, program, fill = apply(survey[,12:29],1,sum))) +
 This violin plot compares the distribution of the number of tools known by respondents between programs, and within programs between genders.  We were interested in seeing if there were differences between programs in the number of tools each respondent knew.  From the plot it appears as though there’s higher variance amongst Male respondents even though the means between genders and programs are similar.
 
 ```{r,echo=FALSE, warning=FALSE,fig.width=5,fig.align='center', out.width='.9\\textwidth'}
+# Python code to generate the image
+# import seaborn as sns
+# palette = sns.color_palette(['#1b62a5', '#fc690f'])
+# sns.set(rc={'axes.facecolor': '#ececec', 'figure.facecolor':'#ececec', 'font.font-size': 30})
+# sns.violinplot(x="program", y="number_tools", hue="gender", 
+#    data=survey[survey.gender.isin(['Male', 'Female'])], split=True, 
+#    palette=palette, size=6).set_title('Number of Tools by Program and Gender')
+
 plot.new()
 violin =readPNG("violin.png")
 
@@ -298,6 +306,11 @@ ggplot(survey)+ aes(y = experience_programming, x =program, fill = program) + ge
 Like the boxplot above, this violin plot also compares distributions of experience levels between programs.  This plot, however, also compares experience levels within groups.  Further, instead of bounding the box at the 25th and 75th percentiles, the violin plot uses kernel density estimation to estimate the distribution of the experience data.  Distributions for Female and Male variables are reflected over the experience axis to show differences in distributions within those categories (and the program category).  This plot also provided some interesting insights: the Male category generally had greater variance in experience levels.  There also appeared to be an inclination towards bimodality in many of the distributions, with a higher and lower skill groups seen in many groups.
 
 ```{r,echo=FALSE, warning=FALSE,fig.width=5,fig.align='center', out.width='.9\\textwidth'}
+# Python code to generate the plot
+# sns.violinplot(x="program", y="experience", hue="gender", 
+#    data=survey[survey.gender.isin(['Male', 'Female'])], split=True, 
+#    palette=palette, size=6).set_title('Experience Level by Program and Gender')
+
 plot.new()
 violin2 =readPNG("violin2.png")
 
